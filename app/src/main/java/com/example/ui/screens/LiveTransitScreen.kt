@@ -64,6 +64,8 @@ import androidx.compose.ui.unit.sp
 import com.example.data.model.LiveSchedulePrediction
 import com.example.data.model.LiveVehicle
 import com.example.data.model.TransitRoute
+import com.example.data.network.RailwayApiEndpoint
+import com.example.ui.components.RailwayApiLookupPanel
 import com.example.ui.components.parseColor
 import kotlinx.coroutines.delay
 
@@ -81,6 +83,10 @@ fun LiveTransitScreen(
     onSyncNow: (String?) -> Unit,
     onIngestToDatabase: () -> Unit,
     onSetAgencyUrl: (String) -> Unit,
+    railwayApiResponse: String?,
+    railwayApiError: String?,
+    isRailwayApiLoading: Boolean,
+    onRailwayLookup: (String, RailwayApiEndpoint, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var selectedFilterRoute by remember { mutableStateOf<String?>(null) }
@@ -255,6 +261,15 @@ fun LiveTransitScreen(
                     }
                 }
             }
+        }
+
+        item {
+            RailwayApiLookupPanel(
+                response = railwayApiResponse,
+                error = railwayApiError,
+                isLoading = isRailwayApiLoading,
+                onLookup = onRailwayLookup
+            )
         }
 
         // Live Telemetry Banner with Ingest Button

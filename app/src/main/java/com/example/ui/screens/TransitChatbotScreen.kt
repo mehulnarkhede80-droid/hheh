@@ -2,7 +2,6 @@ package com.example.ui.screens
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -42,8 +41,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -78,8 +75,8 @@ fun TransitChatbotScreen(
             listOf(
                 ChatMessage(
                     sender = MessageSender.ASSISTANT,
-                    text = "👋 Welcome to TransitPulse AI Copilot! I can analyze route efficiency, forecast passenger demand spikes, optimize vehicle headway, and cross-reference real-world transit stations via Google Search and Google Maps.\n\nAsk me anything or tap one of the suggested inquiries below!",
-                    modelUsed = "Gemini 3.5 Flash"
+                    text = "👋 Welcome to TransitPulse AI Copilot! I can analyze route efficiency, forecast passenger demand spikes, and optimize vehicle headways.\n\nAsk me anything or tap one of the suggested inquiries below!",
+                    modelUsed = "Gemini via Puter.js"
                 )
             )
         )
@@ -88,8 +85,6 @@ fun TransitChatbotScreen(
     var inputText by remember { mutableStateOf("") }
     var isGenerating by remember { mutableStateOf(false) }
     var selectedTier by remember { mutableStateOf(GeminiModelTier.FLASH_GENERAL) }
-    var searchGroundingEnabled by remember { mutableStateOf(true) }
-    var mapsGroundingEnabled by remember { mutableStateOf(true) }
 
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
@@ -99,7 +94,7 @@ fun TransitChatbotScreen(
         "Optimize morning peak headway for RT-METRO-RED",
         "How does heavy rain impact downtown bus demand and delays?",
         "Recommend short-turn express shuttles for congested stops",
-        "Search latest Bus Rapid Transit capacity benchmarks"
+        "Explain current Bus Rapid Transit capacity benchmarks"
     )
 
     fun sendMessage(text: String) {
@@ -113,11 +108,10 @@ fun TransitChatbotScreen(
         scope.launch {
             listState.animateScrollToItem(messages.size)
             val assistantResponse = GeminiApiClient.sendChatMessage(
+                context = context,
                 history = currentHistory,
                 userMessage = text,
-                modelTier = selectedTier,
-                enableSearchGrounding = searchGroundingEnabled,
-                enableMapsGrounding = mapsGroundingEnabled
+                modelTier = selectedTier
             )
             messages = messages + assistantResponse
             isGenerating = false
@@ -157,7 +151,7 @@ fun TransitChatbotScreen(
                     )
                 }
                 Text(
-                    text = "AI Route Optimization & Live Grounding",
+                    text = "Gemini chat via Puter.js",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color(0xFF94A3B8)
                 )
@@ -171,7 +165,7 @@ fun TransitChatbotScreen(
                     border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF10B981))
                 ) {
                     Text(
-                        text = "FREE TIER • $0",
+                        text = "NO GEMINI KEY",
                         fontSize = 10.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = Color(0xFFA7F3D0),
@@ -232,51 +226,6 @@ fun TransitChatbotScreen(
                             color = if (isSel) Color.Black else Color.White
                         )
                     }
-                }
-            }
-        }
-
-        // Grounding Toggles for Gemini 3.5 Flash
-        AnimatedVisibility(visible = selectedTier.supportsSearch || selectedTier.supportsMaps) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp)
-                    .background(Color(0xFF0F172A), RoundedCornerShape(10.dp))
-                    .padding(horizontal = 10.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Language, contentDescription = null, tint = Color(0xFF38BDF8), modifier = Modifier.size(16.dp))
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Search", fontSize = 11.sp, color = Color.White)
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Switch(
-                        checked = searchGroundingEnabled,
-                        onCheckedChange = { searchGroundingEnabled = it },
-                        modifier = Modifier.size(32.dp),
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = Color(0xFF00C9E0),
-                            checkedTrackColor = Color(0xFF0891B2)
-                        )
-                    )
-                }
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Map, contentDescription = null, tint = Color(0xFF34D399), modifier = Modifier.size(16.dp))
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Google Maps", fontSize = 11.sp, color = Color.White)
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Switch(
-                        checked = mapsGroundingEnabled,
-                        onCheckedChange = { mapsGroundingEnabled = it },
-                        modifier = Modifier.size(32.dp),
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = Color(0xFF10B981),
-                            checkedTrackColor = Color(0xFF065F46)
-                        )
-                    )
                 }
             }
         }

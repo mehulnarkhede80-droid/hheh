@@ -29,29 +29,21 @@ enum class CitationType {
 enum class GeminiModelTier(
     val modelId: String,
     val displayName: String,
-    val description: String,
-    val supportsSearch: Boolean = false,
-    val supportsMaps: Boolean = false
+    val description: String
 ) {
     FLASH_GENERAL(
-        modelId = "gemini-3.5-flash",
-        displayName = "3.5 Flash (General + Search & Maps)",
-        description = "General tasks with Google Search & Maps Grounding",
-        supportsSearch = true,
-        supportsMaps = true
+        modelId = "gemini-3.8-flash",
+        displayName = "3.8 Flash",
+        description = "Fast general-purpose chat"
     ),
     FLASH_LITE_FAST(
-        modelId = "gemini-3.1-flash-lite-preview",
-        displayName = "3.1 Flash Lite (Fast)",
-        description = "Low latency telemetry queries and rapid Q&A",
-        supportsSearch = false,
-        supportsMaps = false
+        modelId = "gemini-3.5-flash-lite",
+        displayName = "3.5 Flash Lite",
+        description = "Fast, cost-efficient transit questions"
     ),
     PRO_COMPLEX(
         modelId = "gemini-3.1-pro-preview",
-        displayName = "3.1 Pro (Complex Optimization)",
-        description = "Advanced network optimization and statistical reasoning",
-        supportsSearch = false,
-        supportsMaps = false
+        displayName = "3.1 Pro",
+        description = "Complex network optimization"
     )
 }

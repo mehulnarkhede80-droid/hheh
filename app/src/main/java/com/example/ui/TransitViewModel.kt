@@ -13,6 +13,8 @@ import com.example.data.model.RouteEfficiencyStats
 import com.example.data.model.TransitDemandRecord
 import com.example.data.model.TransitRoute
 import com.example.data.network.LiveTransitNetworkClient
+import com.example.data.network.RailwayApiClient
+import com.example.data.network.RailwayApiEndpoint
 import com.example.data.repository.LiveTransitRepository
 import com.example.data.repository.TransitRepository
 import com.example.domain.DemandPredictor
@@ -64,6 +66,15 @@ class TransitViewModel(application: Application) : AndroidViewModel(application)
 
     private val _liveSyncError = MutableStateFlow<String?>(null)
     val liveSyncError: StateFlow<String?> = _liveSyncError.asStateFlow()
+
+    private val _railwayApiResponse = MutableStateFlow<String?>(null)
+    val railwayApiResponse: StateFlow<String?> = _railwayApiResponse.asStateFlow()
+
+    private val _railwayApiError = MutableStateFlow<String?>(null)
+    val railwayApiError: StateFlow<String?> = _railwayApiError.asStateFlow()
+
+    private val _isRailwayApiLoading = MutableStateFlow(false)
+    val isRailwayApiLoading: StateFlow<Boolean> = _isRailwayApiLoading.asStateFlow()
 
     private val _liveAgencyUrl = MutableStateFlow(LiveTransitNetworkClient.DEFAULT_AGENCY_URL)
     val liveAgencyUrl: StateFlow<String> = _liveAgencyUrl.asStateFlow()
@@ -172,6 +183,18 @@ class TransitViewModel(application: Application) : AndroidViewModel(application)
     fun setLiveAgencyUrl(url: String) {
         _liveAgencyUrl.value = url
         syncLiveData()
+    }
+
+    fun lookupRailwayData(serviceOrigin: String, endpoint: RailwayApiEndpoint, requestJson: String) {
+        viewModelScope.launch {
+            _isRailwayApiLoading.value = true
+            _railwayApiError.value = null
+            _railwayApiResponse.value = null
+            RailwayApiClient.post(serviceOrigin, endpoint, requestJson)
+                .onSuccess { _railwayApiResponse.value = it }
+                .onFailure { _railwayApiError.value = it.localizedMessage ?: "Railway API request failed." }
+            _isRailwayApiLoading.value = false
+        }
     }
 
     fun selectRoute(routeId: String) {

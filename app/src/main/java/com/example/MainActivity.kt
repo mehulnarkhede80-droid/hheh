@@ -118,6 +118,9 @@ fun TransitApp(viewModel: TransitViewModel) {
     val lastSyncTimestamp by viewModel.lastLiveSyncTimestamp.collectAsStateWithLifecycle()
     val liveSyncError by viewModel.liveSyncError.collectAsStateWithLifecycle()
     val liveAgencyUrl by viewModel.liveAgencyUrl.collectAsStateWithLifecycle()
+    val railwayApiResponse by viewModel.railwayApiResponse.collectAsStateWithLifecycle()
+    val railwayApiError by viewModel.railwayApiError.collectAsStateWithLifecycle()
+    val isRailwayApiLoading by viewModel.isRailwayApiLoading.collectAsStateWithLifecycle()
 
     // Handle back button to return to overview tab if on secondary screens
     BackHandler(enabled = currentTab != 0) {
@@ -204,7 +207,13 @@ fun TransitApp(viewModel: TransitViewModel) {
                     onSelectRoute = { viewModel.selectRoute(it) },
                     onSyncNow = { viewModel.syncLiveData(it) },
                     onIngestToDatabase = { viewModel.ingestLiveTelemetry() },
-                    onSetAgencyUrl = { viewModel.setLiveAgencyUrl(it) }
+                    onSetAgencyUrl = { viewModel.setLiveAgencyUrl(it) },
+                    railwayApiResponse = railwayApiResponse,
+                    railwayApiError = railwayApiError,
+                    isRailwayApiLoading = isRailwayApiLoading,
+                    onRailwayLookup = { origin, endpoint, body ->
+                        viewModel.lookupRailwayData(origin, endpoint, body)
+                    }
                 )
                 2 -> RouteEfficiencyScreen(
                     routes = routes,
