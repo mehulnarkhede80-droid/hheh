@@ -23,7 +23,7 @@ object GeminiApiClient {
             append("User: ")
             append(userMessage)
         }
-        try {
+        return try {
             val responseText = PuterApiClient.chat(context, prompt, modelTier.modelId)
             ChatMessage(
                 sender = MessageSender.ASSISTANT,

@@ -12,7 +12,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import org.json.JSONObject
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.coroutines.resumeWith
 
 object PuterApiClient {
     private const val REQUEST_TIMEOUT_MILLIS = 120_000L
