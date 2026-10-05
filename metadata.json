@@ -1,0 +1,6 @@
+{
+  "name": "TransitPulse",
+  "description": "Transit demand forecasting, route efficiency analytics, interactive network optimization, and dataset injection/export.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
