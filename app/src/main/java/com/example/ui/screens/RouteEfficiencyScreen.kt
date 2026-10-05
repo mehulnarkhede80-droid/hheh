@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.EnergySavingsLeaf
 import androidx.compose.material.icons.filled.HourglassTop
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Speed
+import androidx.compose.material.icons.filled.Subway
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -76,21 +77,22 @@ fun RouteEfficiencyScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = "Route Efficiency Analytics",
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.displayMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
             )
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = "Performance optimization, bottleneck detection & load factor",
+                text = "Dynamic load factor optimization, bottleneck detection & schedule adherence",
                 style = MaterialTheme.typography.bodySmall,
                 color = Color(0xFF94A3B8)
             )
         }
 
-        // Route Selector Chips
+        // Route Selector Chips with Google Stitch Pills
         item {
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -101,24 +103,24 @@ fun RouteEfficiencyScreen(
                     val rColor = parseColor(r.colorHex)
 
                     Surface(
-                        shape = RoundedCornerShape(12.dp),
-                        color = if (isSel) rColor.copy(alpha = 0.25f) else Color(0xFF1E293B),
+                        shape = RoundedCornerShape(14.dp),
+                        color = if (isSel) rColor.copy(alpha = 0.22f) else Color(0xFF131D2E),
                         border = androidx.compose.foundation.BorderStroke(
                             1.dp,
-                            if (isSel) rColor else Color(0xFF334155)
+                            if (isSel) rColor else Color(0xFF24334A)
                         ),
                         modifier = Modifier.clickable { onSelectRoute(r.routeId) }
                     ) {
                         Row(
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Box(modifier = Modifier.size(8.dp).background(rColor, CircleShape))
-                            Spacer(modifier = Modifier.width(6.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = r.routeId,
                                 fontSize = 12.sp,
-                                fontWeight = if (isSel) FontWeight.Bold else FontWeight.Medium,
+                                fontWeight = if (isSel) FontWeight.ExtraBold else FontWeight.Medium,
                                 color = if (isSel) Color.White else Color(0xFF94A3B8)
                             )
                         }
@@ -134,39 +136,40 @@ fun RouteEfficiencyScreen(
                 val stats = currentStats
 
                 Card(
-                    shape = RoundedCornerShape(20.dp),
+                    shape = RoundedCornerShape(22.dp),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
                     border = androidx.compose.foundation.BorderStroke(
                         1.dp,
-                        Brush.verticalGradient(listOf(rColor.copy(alpha = 0.6f), Color(0xFF1E293B)))
+                        Brush.verticalGradient(listOf(rColor.copy(alpha = 0.65f), Color(0xFF1E293B)))
                     ),
                     modifier = Modifier.fillMaxWidth().testTag("route_detail_card")
                 ) {
-                    Column(modifier = Modifier.padding(18.dp)) {
+                    Column(modifier = Modifier.padding(20.dp)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Column {
+                            Column(modifier = Modifier.weight(1f)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Surface(
-                                        shape = RoundedCornerShape(6.dp),
-                                        color = rColor.copy(alpha = 0.2f)
+                                        shape = RoundedCornerShape(8.dp),
+                                        color = rColor.copy(alpha = 0.20f),
+                                        border = androidx.compose.foundation.BorderStroke(1.dp, rColor)
                                     ) {
                                         Text(
                                             text = route.transportType.uppercase(),
                                             fontSize = 10.sp,
-                                            fontWeight = FontWeight.Bold,
+                                            fontWeight = FontWeight.ExtraBold,
                                             color = rColor,
-                                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
                                         )
                                     }
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
                                         text = route.routeId,
                                         fontWeight = FontWeight.ExtraBold,
-                                        fontSize = 18.sp,
+                                        fontSize = 19.sp,
                                         color = Color.White
                                     )
                                 }
@@ -174,41 +177,48 @@ fun RouteEfficiencyScreen(
                                 Text(
                                     text = route.routeName,
                                     fontSize = 13.sp,
-                                    color = Color(0xFFCBD5E1)
+                                    color = Color(0xFFCBD5E1),
+                                    lineHeight = 18.sp
                                 )
                             }
 
                             // Grade Pill
                             stats?.let { s ->
+                                val gradeColor = when (s.efficiencyGrade) {
+                                    "A+", "A" -> Color(0xFF10B981)
+                                    "B" -> Color(0xFF00C9E0)
+                                    "C" -> Color(0xFFF59E0B)
+                                    else -> Color(0xFFEF4444)
+                                }
                                 Surface(
-                                    shape = RoundedCornerShape(12.dp),
-                                    color = Color(0xFF10B981).copy(alpha = 0.2f),
-                                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF10B981))
+                                    shape = RoundedCornerShape(14.dp),
+                                    color = gradeColor.copy(alpha = 0.15f),
+                                    border = androidx.compose.foundation.BorderStroke(1.dp, gradeColor)
                                 ) {
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally,
-                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
                                     ) {
-                                        Text("GRADE", fontSize = 9.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFFA7F3D0))
-                                        Text(s.efficiencyGrade, fontSize = 16.sp, fontWeight = FontWeight.Black, color = Color(0xFF10B981))
+                                        Text("GRADE", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = gradeColor.copy(alpha = 0.8f))
+                                        Text(s.efficiencyGrade, fontSize = 20.sp, fontWeight = FontWeight.Black, color = gradeColor)
                                     }
                                 }
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(18.dp))
 
-                        // Efficiency Progress Bar
+                        // Efficiency Score Progress Bar
                         stats?.let { s ->
                             Column {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Text("Overall Efficiency Score", fontSize = 12.sp, color = Color(0xFF94A3B8))
-                                    Text("${s.overallEfficiencyScore.toInt()}%", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF00C9E0))
+                                    Text("Overall Efficiency Index", fontSize = 12.sp, color = Color(0xFF94A3B8), fontWeight = FontWeight.Medium)
+                                    Text("${s.overallEfficiencyScore.toInt()}%", fontSize = 13.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF00C9E0))
                                 }
-                                Spacer(modifier = Modifier.height(6.dp))
+                                Spacer(modifier = Modifier.height(8.dp))
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -228,12 +238,12 @@ fun RouteEfficiencyScreen(
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(18.dp))
 
                         // 4 Detailed Metrics
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             RouteMetricBox(
                                 label = "Load Factor",
@@ -253,11 +263,11 @@ fun RouteEfficiencyScreen(
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             RouteMetricBox(
                                 label = "Total Volume",
@@ -277,14 +287,14 @@ fun RouteEfficiencyScreen(
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(14.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
                         // Route Specs Row
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(Color(0xFF060911), RoundedCornerShape(10.dp))
-                                .padding(10.dp),
+                                .background(Color(0xFF060911), RoundedCornerShape(12.dp))
+                                .padding(12.dp),
                             horizontalArrangement = Arrangement.SpaceAround
                         ) {
                             SpecItem("Distance", "${route.totalDistanceKm} km")
@@ -297,61 +307,56 @@ fun RouteEfficiencyScreen(
             }
         }
 
-        // Bottleneck Warning Card
+        // Bottleneck Alert Card
         item {
             currentStats?.let { s ->
                 val hasBottleneck = s.avgDelayMinutes > 4.5 || s.congestionLevel.contains("Congestion")
+                val alertColor = if (hasBottleneck) Color(0xFFEF4444) else Color(0xFF10B981)
+
                 Card(
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(18.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = if (hasBottleneck) Color(0xFF280B14) else Color(0xFF0A2218)
+                        containerColor = if (hasBottleneck) Color(0xFF220810) else Color(0xFF081C14)
                     ),
                     border = androidx.compose.foundation.BorderStroke(
                         1.dp,
-                        Brush.horizontalGradient(
-                            listOf(
-                                if (hasBottleneck) Color(0xFFEF4444) else Color(0xFF10B981),
-                                Color.Transparent
-                            )
-                        )
+                        Brush.horizontalGradient(listOf(alertColor.copy(alpha = 0.8f), Color.Transparent))
                     ),
                     modifier = Modifier.fillMaxWidth().testTag("bottleneck_card")
                 ) {
                     Row(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(18.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(38.dp)
-                                .background(
-                                    (if (hasBottleneck) Color(0xFFEF4444) else Color(0xFF10B981)).copy(alpha = 0.2f),
-                                    CircleShape
-                                ),
+                                .size(42.dp)
+                                .background(alertColor.copy(alpha = 0.20f), CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = if (hasBottleneck) Icons.Default.Warning else Icons.Default.EnergySavingsLeaf,
                                 contentDescription = null,
-                                tint = if (hasBottleneck) Color(0xFFEF4444) else Color(0xFF10B981),
-                                modifier = Modifier.size(20.dp)
+                                tint = alertColor,
+                                modifier = Modifier.size(22.dp)
                             )
                         }
 
-                        Spacer(modifier = Modifier.width(12.dp))
+                        Spacer(modifier = Modifier.width(14.dp))
 
                         Column {
                             Text(
-                                text = if (hasBottleneck) "Corridor Bottleneck Alert" else "Smooth Flow Corridor",
+                                text = if (hasBottleneck) "Corridor Bottleneck Identified" else "Optimal Flow Corridor",
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 14.sp,
                                 color = Color.White
                             )
+                            Spacer(modifier = Modifier.height(3.dp))
                             Text(
                                 text = if (hasBottleneck)
-                                    "Critical pinch point at '${s.topBottleneckStop}' with ${s.avgDelayMinutes}m avg delay. Recommend dispatching skip-stop feeder."
+                                    "Choke point detected at '${s.topBottleneckStop}' with ${s.avgDelayMinutes}m average delay. Telemetry recommends inserting short-turn express buses."
                                 else
-                                    "Corridor operations running within optimal tolerance. Zero critical choke points detected.",
+                                    "Corridor operations running within optimal tolerance. Vehicle loads and dwell times are balanced.",
                                 fontSize = 11.sp,
                                 color = Color(0xFFCBD5E1),
                                 lineHeight = 16.sp
@@ -362,7 +367,7 @@ fun RouteEfficiencyScreen(
             }
         }
 
-        // Corridor Efficiency Ranking
+        // Corridor Efficiency Ranking Bar Chart
         item {
             RouteEfficiencyBarChart(
                 stats = efficiencyStats,
@@ -370,50 +375,8 @@ fun RouteEfficiencyScreen(
             )
         }
 
-        // Recent Telemetry Sample for Selected Route
         item {
-            Card(
-                shape = RoundedCornerShape(18.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        text = "Recent Station Records ($selectedRouteId)",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    if (routeRecords.isEmpty()) {
-                        Text("No telemetry records recorded for this route yet.", color = Color(0xFF64748B), fontSize = 12.sp)
-                    } else {
-                        routeRecords.take(4).forEach { rec ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 6.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Column {
-                                    Text(text = rec.stopName, fontWeight = FontWeight.Bold, color = Color.White, fontSize = 12.sp)
-                                    Text(text = "${rec.dayOfWeek} ${String.format("%02d", rec.hourOfDay)}:00 • ${rec.weatherCondition}", color = Color(0xFF94A3B8), fontSize = 11.sp)
-                                }
-                                Column(horizontalAlignment = Alignment.End) {
-                                    Text(text = "${rec.passengerBoardings} boardings", fontWeight = FontWeight.Bold, color = Color(0xFF00C9E0), fontSize = 12.sp)
-                                    Text(text = "Delay: ${rec.delayMinutes}m", color = if (rec.delayMinutes > 5) Color(0xFFEF4444) else Color(0xFF10B981), fontSize = 10.sp)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
@@ -428,21 +391,22 @@ private fun RouteMetricBox(
     modifier: Modifier = Modifier
 ) {
     Surface(
-        shape = RoundedCornerShape(12.dp),
-        color = Color(0xFF1E293B),
+        shape = RoundedCornerShape(14.dp),
+        color = Color(0xFF131D2E),
         modifier = modifier
     ) {
-        Column(modifier = Modifier.padding(10.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = label, fontSize = 11.sp, color = Color(0xFF94A3B8))
+                Text(text = label, fontSize = 11.sp, color = Color(0xFF94A3B8), fontWeight = FontWeight.Medium)
                 Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(16.dp))
             }
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = value, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(text = value, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = Color.White)
+            Spacer(modifier = Modifier.height(2.dp))
             Text(text = subtitle, fontSize = 10.sp, color = Color(0xFF64748B))
         }
     }
@@ -452,7 +416,7 @@ private fun RouteMetricBox(
 private fun SpecItem(label: String, value: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = label, fontSize = 10.sp, color = Color(0xFF64748B))
-        Spacer(modifier = Modifier.height(2.dp))
-        Text(text = value, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.White)
+        Spacer(modifier = Modifier.height(3.dp))
+        Text(text = value, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
     }
 }

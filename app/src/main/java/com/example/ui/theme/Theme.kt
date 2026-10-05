@@ -55,7 +55,7 @@ fun TransitPulseTheme(
 
     MaterialTheme(
         colorScheme = DarkColorScheme,
-        typography = Typography,
+        typography = AppTypography,
         content = content
     )
 }

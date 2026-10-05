@@ -271,7 +271,7 @@ fun HourlyDemandChart(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        text = "${String.format("%02d", it.hour)}:00 → ",
+                                        text = "${String.format(java.util.Locale.US, "%02d", it.hour)}:00 → ",
                                         fontSize = 11.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = Color.White

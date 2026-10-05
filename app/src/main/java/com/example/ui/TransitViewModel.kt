@@ -6,10 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.data.local.TransitDatabase
 import com.example.data.model.DemandPredictionInput
 import com.example.data.model.DemandPredictionResult
+import com.example.data.model.LiveSchedulePrediction
+import com.example.data.model.LiveVehicle
 import com.example.data.model.NetworkOverviewMetrics
 import com.example.data.model.RouteEfficiencyStats
 import com.example.data.model.TransitDemandRecord
 import com.example.data.model.TransitRoute
+import com.example.data.network.LiveTransitNetworkClient
+import com.example.data.repository.LiveTransitRepository
 import com.example.data.repository.TransitRepository
 import com.example.domain.DemandPredictor
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +27,8 @@ import kotlinx.coroutines.launch
 class TransitViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: TransitRepository
+    private val liveRepository: LiveTransitRepository
+
     val routes: StateFlow<List<TransitRoute>>
     val records: StateFlow<List<TransitDemandRecord>>
 
@@ -43,9 +49,29 @@ class TransitViewModel(application: Application) : AndroidViewModel(application)
     private val _userMessage = MutableStateFlow<String?>(null)
     val userMessage: StateFlow<String?> = _userMessage.asStateFlow()
 
+    // Real-Time Live Sync State
+    private val _liveVehicles = MutableStateFlow<List<LiveVehicle>>(emptyList())
+    val liveVehicles: StateFlow<List<LiveVehicle>> = _liveVehicles.asStateFlow()
+
+    private val _livePredictions = MutableStateFlow<List<LiveSchedulePrediction>>(emptyList())
+    val livePredictions: StateFlow<List<LiveSchedulePrediction>> = _livePredictions.asStateFlow()
+
+    private val _isSyncingLive = MutableStateFlow(false)
+    val isSyncingLive: StateFlow<Boolean> = _isSyncingLive.asStateFlow()
+
+    private val _lastLiveSyncTimestamp = MutableStateFlow(0L)
+    val lastLiveSyncTimestamp: StateFlow<Long> = _lastLiveSyncTimestamp.asStateFlow()
+
+    private val _liveSyncError = MutableStateFlow<String?>(null)
+    val liveSyncError: StateFlow<String?> = _liveSyncError.asStateFlow()
+
+    private val _liveAgencyUrl = MutableStateFlow(LiveTransitNetworkClient.DEFAULT_AGENCY_URL)
+    val liveAgencyUrl: StateFlow<String> = _liveAgencyUrl.asStateFlow()
+
     init {
         val database = TransitDatabase.getDatabase(application)
         repository = TransitRepository(database.transitDao())
+        liveRepository = LiveTransitRepository(database.transitDao())
 
         routes = repository.allRoutes.stateIn(
             scope = viewModelScope,
@@ -107,6 +133,45 @@ class TransitViewModel(application: Application) : AndroidViewModel(application)
                 }
             }
         }
+
+        // Initial live sync attempt
+        syncLiveData()
+    }
+
+    fun syncLiveData(routeId: String? = null) {
+        viewModelScope.launch {
+            _isSyncingLive.value = true
+            _liveSyncError.value = null
+            try {
+                val (vehs, preds) = liveRepository.fetchRealTimeData(_liveAgencyUrl.value, routeId)
+                _liveVehicles.value = vehs
+                _livePredictions.value = preds
+                _lastLiveSyncTimestamp.value = System.currentTimeMillis()
+                if (vehs.isEmpty() && preds.isEmpty()) {
+                    _liveSyncError.value = "No live GTFS-RT vehicles or departures currently reporting on this corridor"
+                } else {
+                    _userMessage.value = "Synced ${vehs.size} live vehicles & ${preds.size} departures"
+                }
+            } catch (e: Exception) {
+                _liveSyncError.value = "Sync notice: ${e.localizedMessage ?: "Transit server offline"}"
+            } finally {
+                _isSyncingLive.value = false
+            }
+        }
+    }
+
+    fun ingestLiveTelemetry() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val count = liveRepository.ingestLiveDataToDatabase(_liveVehicles.value, _livePredictions.value)
+            _isLoading.value = false
+            _userMessage.value = "Ingested $count real-time transit records to analytics database!"
+        }
+    }
+
+    fun setLiveAgencyUrl(url: String) {
+        _liveAgencyUrl.value = url
+        syncLiveData()
     }
 
     fun selectRoute(routeId: String) {

@@ -25,7 +25,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FileDownload
-import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
@@ -36,7 +35,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -88,7 +86,7 @@ fun DataManagementScreen(
     if (showResetConfirm) {
         AlertDialog(
             onDismissRequest = { showResetConfirm = false },
-            title = { Text("Reset to Baseline Dataset?", color = Color.White) },
+            title = { Text("Reset to Baseline Dataset?", color = Color.White, fontWeight = FontWeight.Bold) },
             text = { Text("This will re-initialize all routes and demand telemetry to the default Metropolitan Transit Authority sample dataset.", color = Color(0xFFCBD5E1)) },
             containerColor = Color(0xFF1E293B),
             confirmButton = {
@@ -97,9 +95,10 @@ fun DataManagementScreen(
                         onResetDatabase()
                         showResetConfirm = false
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEF4444))
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEF4444)),
+                    shape = RoundedCornerShape(10.dp)
                 ) {
-                    Text("Reset Dataset", color = Color.White)
+                    Text("Reset Dataset", color = Color.White, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
@@ -118,7 +117,7 @@ fun DataManagementScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -127,113 +126,121 @@ fun DataManagementScreen(
                 Column {
                     Text(
                         text = "Transit Data Studio",
-                        style = MaterialTheme.typography.headlineSmall,
+                        style = MaterialTheme.typography.displayMedium,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
+                    Spacer(modifier = Modifier.height(2.dp))
                     Text(
-                        text = "${records.size} telemetry records across ${routes.size} active corridors",
+                        text = "${records.size} telemetry records • ${routes.size} active transit lines",
                         style = MaterialTheme.typography.bodySmall,
                         color = Color(0xFF94A3B8)
                     )
                 }
 
-                IconButton(
-                    onClick = { showResetConfirm = true },
-                    modifier = Modifier.testTag("reset_db_button")
+                Surface(
+                    shape = CircleShape,
+                    color = Color(0xFF1E293B),
+                    modifier = Modifier.size(40.dp)
                 ) {
-                    Icon(Icons.Default.RestartAlt, contentDescription = "Reset DB", tint = Color(0xFF94A3B8))
+                    IconButton(
+                        onClick = { showResetConfirm = true },
+                        modifier = Modifier.testTag("reset_db_button")
+                    ) {
+                        Icon(Icons.Default.RestartAlt, contentDescription = "Reset DB", tint = Color(0xFF94A3B8), modifier = Modifier.size(20.dp))
+                    }
                 }
             }
         }
 
-        // Action Toolbar Buttons (2x2 Grid)
+        // Action Toolbar Buttons (Google Stitch 2x2 Grid)
         item {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Button(
                     onClick = onOpenAddRecord,
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(14.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00C9E0)),
                     modifier = Modifier
                         .weight(1f)
-                        .height(44.dp)
+                        .height(48.dp)
                         .testTag("btn_open_add_record")
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = null, tint = Color.Black, modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.Add, contentDescription = null, tint = Color.Black, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(6.dp))
                     Text("Add Record", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 12.sp)
                 }
 
                 Button(
                     onClick = onOpenAddRoute,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E293B)),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF131D2E)),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF24334A)),
                     modifier = Modifier
                         .weight(1f)
-                        .height(44.dp)
+                        .height(48.dp)
                         .testTag("btn_open_add_route")
                 ) {
-                    Icon(Icons.AutoMirrored.Filled.AltRoute, contentDescription = null, tint = Color(0xFF00C9E0), modifier = Modifier.size(16.dp))
+                    Icon(Icons.AutoMirrored.Filled.AltRoute, contentDescription = null, tint = Color(0xFF00C9E0), modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(6.dp))
                     Text("New Route", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp)
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Button(
                     onClick = onOpenImportDataset,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6)),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0284C7)),
                     modifier = Modifier
                         .weight(1f)
-                        .height(44.dp)
+                        .height(48.dp)
                         .testTag("btn_open_import_dataset")
                 ) {
-                    Icon(Icons.Default.CloudDownload, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.CloudDownload, contentDescription = null, tint = Color.White, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(6.dp))
                     Text("Inject Dataset", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp)
                 }
 
                 Button(
                     onClick = onOpenExportDataset,
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(14.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF10B981)),
                     modifier = Modifier
                         .weight(1f)
-                        .height(44.dp)
+                        .height(48.dp)
                         .testTag("btn_open_export_dataset")
                 ) {
-                    Icon(Icons.Default.FileDownload, contentDescription = null, tint = Color.Black, modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.FileDownload, contentDescription = null, tint = Color.Black, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(6.dp))
                     Text("Export Data", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 12.sp)
                 }
             }
         }
 
-        // Search & Filter
+        // Search Field with Stitch Rounded Style
         item {
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
-                placeholder = { Text("Search by stop, route, or day...", color = Color(0xFF64748B)) },
+                placeholder = { Text("Search by station, route, or day...", color = Color(0xFF64748B), fontSize = 13.sp) },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = Color(0xFF94A3B8)) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color(0xFF00C9E0),
-                    unfocusedBorderColor = Color(0xFF334155),
+                    unfocusedBorderColor = Color(0xFF24334A),
                     focusedTextColor = Color.White,
                     unfocusedTextColor = Color.White,
                     focusedContainerColor = Color(0xFF0F172A),
                     unfocusedContainerColor = Color(0xFF0F172A)
                 ),
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(14.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag("search_records_input")
@@ -243,14 +250,18 @@ fun DataManagementScreen(
         // Route Filter Chips
         item {
             LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 item {
                     val isAll = selectedFilterRoute == null
                     Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = if (isAll) Color(0xFF00C9E0) else Color(0xFF1E293B),
+                        shape = RoundedCornerShape(12.dp),
+                        color = if (isAll) Color(0xFF00C9E0) else Color(0xFF131D2E),
+                        border = androidx.compose.foundation.BorderStroke(
+                            1.dp,
+                            if (isAll) Color(0xFF00C9E0) else Color(0xFF24334A)
+                        ),
                         modifier = Modifier.clickable { selectedFilterRoute = null }
                     ) {
                         Text(
@@ -258,7 +269,7 @@ fun DataManagementScreen(
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
                             color = if (isAll) Color.Black else Color.White,
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp)
                         )
                     }
                 }
@@ -266,8 +277,12 @@ fun DataManagementScreen(
                 items(routes) { r ->
                     val isSel = selectedFilterRoute == r.routeId
                     Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = if (isSel) Color(0xFF00C9E0) else Color(0xFF1E293B),
+                        shape = RoundedCornerShape(12.dp),
+                        color = if (isSel) Color(0xFF00C9E0) else Color(0xFF131D2E),
+                        border = androidx.compose.foundation.BorderStroke(
+                            1.dp,
+                            if (isSel) Color(0xFF00C9E0) else Color(0xFF24334A)
+                        ),
                         modifier = Modifier.clickable { selectedFilterRoute = r.routeId }
                     ) {
                         Text(
@@ -275,7 +290,7 @@ fun DataManagementScreen(
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
                             color = if (isSel) Color.Black else Color.White,
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp)
                         )
                     }
                 }
@@ -286,14 +301,15 @@ fun DataManagementScreen(
         if (filteredRecords.isEmpty()) {
             item {
                 Card(
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(18.dp),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF1E293B)),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(32.dp),
+                            .padding(36.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text("No matching telemetry records", fontWeight = FontWeight.Bold, color = Color.White)
@@ -312,7 +328,7 @@ fun DataManagementScreen(
         }
 
         item {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
@@ -322,8 +338,11 @@ private fun RecordItemCard(
     record: TransitDemandRecord,
     onDelete: () -> Unit
 ) {
+    val isDelayed = record.delayMinutes > 5.0
+    val statusColor = if (isDelayed) Color(0xFFEF4444) else Color(0xFF10B981)
+
     Card(
-        shape = RoundedCornerShape(14.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
         border = androidx.compose.foundation.BorderStroke(
             1.dp,
@@ -335,38 +354,44 @@ private fun RecordItemCard(
     ) {
         Row(
             modifier = Modifier
-                .padding(14.dp)
+                .padding(16.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    Surface(
+                        shape = RoundedCornerShape(6.dp),
+                        color = Color(0xFF00C9E0).copy(alpha = 0.15f)
+                    ) {
+                        Text(
+                            text = record.routeId,
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 11.sp,
+                            color = Color(0xFF00C9E0),
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = record.routeId,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 12.sp,
-                        color = Color(0xFF00C9E0)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = "• ${record.stopName}",
+                        text = record.stopName,
                         fontWeight = FontWeight.Bold,
                         fontSize = 13.sp,
                         color = Color.White
                     )
                 }
 
-                Spacer(modifier = Modifier.height(3.dp))
+                Spacer(modifier = Modifier.height(5.dp))
 
                 Text(
-                    text = "${record.dayOfWeek} ${String.format("%02d", record.hourOfDay)}:00 • ${record.weatherCondition} • Load: ${record.currentOccupancy}/${record.vehicleCapacity} (${record.loadFactorPercent.toInt()}%)",
+                    text = "${record.dayOfWeek} ${String.format(java.util.Locale.US, "%02d", record.hourOfDay)}:00 • ${record.weatherCondition} • Load: ${record.currentOccupancy}/${record.vehicleCapacity} (${record.loadFactorPercent.toInt()}%)",
                     fontSize = 11.sp,
                     color = Color(0xFF94A3B8)
                 )
 
                 if (record.notes.isNotBlank()) {
-                    Spacer(modifier = Modifier.height(2.dp))
+                    Spacer(modifier = Modifier.height(3.dp))
                     Text(
                         text = record.notes,
                         fontSize = 10.sp,
@@ -379,15 +404,16 @@ private fun RecordItemCard(
             Column(horizontalAlignment = Alignment.End) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Surface(
-                        shape = RoundedCornerShape(6.dp),
-                        color = if (record.delayMinutes > 5) Color(0xFFEF4444).copy(alpha = 0.2f) else Color(0xFF10B981).copy(alpha = 0.2f)
+                        shape = RoundedCornerShape(8.dp),
+                        color = statusColor.copy(alpha = 0.15f),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, statusColor.copy(alpha = 0.5f))
                     ) {
                         Text(
                             text = "+${record.delayMinutes}m delay",
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
-                            color = if (record.delayMinutes > 5) Color(0xFFEF4444) else Color(0xFF10B981),
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                            color = statusColor,
+                            modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp)
                         )
                     }
 
@@ -404,10 +430,11 @@ private fun RecordItemCard(
                     }
                 }
 
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "${record.passengerBoardings} boardings",
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.ExtraBold,
                     color = Color.White
                 )
             }

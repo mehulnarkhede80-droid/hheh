@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.AutoGraph
 import androidx.compose.material.icons.filled.DirectionsBus
 import androidx.compose.material.icons.filled.ElectricBolt
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.SmartToy
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material3.Button
@@ -76,11 +77,11 @@ fun DashboardScreen(
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // 1. Top Hero Section with generated banner
+        // 1. Top Hero Section with Google Stitch Glassmorphism
         item {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             Card(
-                shape = RoundedCornerShape(22.dp),
+                shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -90,7 +91,7 @@ fun DashboardScreen(
                     Brush.verticalGradient(listOf(Color(0xFF00C9E0).copy(alpha = 0.5f), Color(0xFF1E293B)))
                 )
             ) {
-                Box(modifier = Modifier.fillMaxWidth().height(160.dp)) {
+                Box(modifier = Modifier.fillMaxWidth().height(168.dp)) {
                     // Hero Image
                     Image(
                         painter = painterResource(id = R.drawable.hero_banner),
@@ -98,7 +99,7 @@ fun DashboardScreen(
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
-                            .clip(RoundedCornerShape(22.dp))
+                            .clip(RoundedCornerShape(24.dp))
                     )
 
                     // Scrim overlay
@@ -108,8 +109,8 @@ fun DashboardScreen(
                             .background(
                                 Brush.verticalGradient(
                                     listOf(
-                                        Color(0x77000000),
-                                        Color(0xDD090D16)
+                                        Color(0x66000000),
+                                        Color(0xEE090D16)
                                     )
                                 )
                             )
@@ -119,7 +120,7 @@ fun DashboardScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp),
+                            .padding(18.dp),
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
                         Row(
@@ -128,44 +129,61 @@ fun DashboardScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Surface(
-                                shape = RoundedCornerShape(10.dp),
-                                color = Color(0xFF00C9E0).copy(alpha = 0.25f),
+                                shape = RoundedCornerShape(12.dp),
+                                color = Color(0xFF00C9E0).copy(alpha = 0.20f),
                                 border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF00C9E0))
                             ) {
                                 Row(
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Icon(Icons.Default.ElectricBolt, contentDescription = null, tint = Color(0xFF00C9E0), modifier = Modifier.size(14.dp))
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text("DEMAND & ROUTE OPTIMIZATION", fontSize = 10.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFFA5F3FC))
+                                    Icon(
+                                        Icons.Default.ElectricBolt,
+                                        contentDescription = null,
+                                        tint = Color(0xFF00C9E0),
+                                        modifier = Modifier.size(14.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = "TRANSITPULSE OS",
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.ExtraBold,
+                                        color = Color(0xFFA5F3FC)
+                                    )
                                 }
                             }
 
                             Surface(
-                                shape = RoundedCornerShape(10.dp),
-                                color = Color(0xFF10B981).copy(alpha = 0.2f),
+                                shape = RoundedCornerShape(12.dp),
+                                color = Color(0xFF10B981).copy(alpha = 0.18f),
                                 border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF10B981))
                             ) {
-                                Text(
-                                    text = "SYSTEM ONLINE",
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFFA7F3D0),
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                                )
+                                ) {
+                                    Box(modifier = Modifier.size(6.dp).background(Color(0xFF10B981), CircleShape))
+                                    Spacer(modifier = Modifier.width(5.dp))
+                                    Text(
+                                        text = "TELEMETRY LIVE",
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFFA7F3D0)
+                                    )
+                                }
                             }
                         }
 
                         Column {
                             Text(
-                                text = "TransitPulse Analytics",
-                                style = MaterialTheme.typography.headlineMedium,
+                                text = "Intelligent Transit Mesh",
+                                style = MaterialTheme.typography.displayMedium,
                                 fontWeight = FontWeight.ExtraBold,
                                 color = Color.White
                             )
+                            Spacer(modifier = Modifier.height(2.dp))
                             Text(
-                                text = "Dynamic Route Efficiency & Demand Forecasting Platform",
+                                text = "Route Efficiency, Diurnal Forecasting & Fleet Optimization",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = Color(0xFF94A3B8)
                             )
@@ -175,7 +193,7 @@ fun DashboardScreen(
             }
         }
 
-        // 2. High Level Metric Cards (2x2 Grid)
+        // 2. High Level Metric Cards (Google Stitch 2x2 Grid)
         item {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -188,15 +206,17 @@ fun DashboardScreen(
                     badgeColor = Color(0xFF10B981),
                     icon = Icons.Default.Speed,
                     iconColor = Color(0xFF00C9E0),
+                    progress = (networkOverview.averageNetworkEfficiency / 100.0).toFloat().coerceIn(0f, 1f),
                     modifier = Modifier.weight(1f)
                 )
                 MetricSummaryCard(
-                    title = "On-Time Rate",
+                    title = "Punctuality Rate",
                     value = "${networkOverview.overallOnTimeRate.toInt()}%",
-                    badge = "Punctuality",
+                    badge = "On-Time Baseline",
                     badgeColor = Color(0xFF00C9E0),
                     icon = Icons.Default.Schedule,
                     iconColor = Color(0xFFF59E0B),
+                    progress = (networkOverview.overallOnTimeRate / 100.0).toFloat().coerceIn(0f, 1f),
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -212,21 +232,23 @@ fun DashboardScreen(
                     badgeColor = Color(0xFFA855F7),
                     icon = Icons.Default.DirectionsBus,
                     iconColor = Color(0xFFA855F7),
+                    progress = 0.85f,
                     modifier = Modifier.weight(1f)
                 )
                 MetricSummaryCard(
                     title = "Active Corridors",
                     value = "${networkOverview.totalActiveRoutes}",
-                    badge = "${networkOverview.highEfficiencyRouteCount} High Eff",
+                    badge = "${networkOverview.highEfficiencyRouteCount} High Eff Lines",
                     badgeColor = Color(0xFF10B981),
                     icon = Icons.Default.Timeline,
                     iconColor = Color(0xFF10B981),
+                    progress = 0.90f,
                     modifier = Modifier.weight(1f)
                 )
             }
         }
 
-        // 3. Quick Action Bar
+        // 3. Quick Action Buttons
         item {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -234,29 +256,50 @@ fun DashboardScreen(
             ) {
                 Button(
                     onClick = onNavigateToSimulator,
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(14.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00C9E0)),
                     modifier = Modifier
                         .weight(1f)
-                        .height(44.dp)
+                        .height(48.dp)
                         .testTag("action_run_simulator")
                 ) {
-                    Icon(Icons.Default.AutoGraph, contentDescription = null, tint = Color.Black, modifier = Modifier.size(16.dp))
+                    Icon(
+                        Icons.Default.AutoGraph,
+                        contentDescription = null,
+                        tint = Color.Black,
+                        modifier = Modifier.size(18.dp)
+                    )
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text("Predict Demand", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                    Text(
+                        text = "Predict Demand",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp
+                    )
                 }
 
                 OutlinedButton(
                     onClick = onOpenAddRecord,
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF334155)),
                     modifier = Modifier
                         .weight(1f)
-                        .height(44.dp)
+                        .height(48.dp)
                         .testTag("action_log_telemetry")
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = null,
+                        tint = Color(0xFF00C9E0),
+                        modifier = Modifier.size(18.dp)
+                    )
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text("Add Data", color = Color.White, fontSize = 12.sp)
+                    Text(
+                        text = "Log Telemetry",
+                        color = Color.White,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 12.sp
+                    )
                 }
             }
         }
@@ -290,7 +333,7 @@ fun DashboardScreen(
         }
 
         item {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
@@ -303,14 +346,15 @@ fun MetricSummaryCard(
     badgeColor: Color,
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     iconColor: Color,
+    progress: Float,
     modifier: Modifier = Modifier
 ) {
     Card(
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF111827)),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF101726)),
         border = androidx.compose.foundation.BorderStroke(
             1.dp,
-            Brush.verticalGradient(listOf(Color(0xFF1E293B), Color(0xFF0F172A)))
+            Brush.verticalGradient(listOf(Color(0xFF1E293B), Color(0xFF0D1424)))
         ),
         modifier = modifier
     ) {
@@ -328,7 +372,7 @@ fun MetricSummaryCard(
                 )
                 Box(
                     modifier = Modifier
-                        .size(28.dp)
+                        .size(32.dp)
                         .background(iconColor.copy(alpha = 0.15f), CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
@@ -340,12 +384,32 @@ fun MetricSummaryCard(
 
             Text(
                 text = value,
-                fontSize = 22.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = Color.White
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(6.dp))
+
+            // Micro progress indicator
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(4.dp)
+                    .background(Color(0xFF1E293B), CircleShape)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(progress)
+                        .height(4.dp)
+                        .background(
+                            Brush.horizontalGradient(listOf(iconColor.copy(alpha = 0.6f), iconColor)),
+                            CircleShape
+                        )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(6.dp))
 
             Surface(
                 shape = RoundedCornerShape(6.dp),

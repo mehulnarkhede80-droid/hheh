@@ -1,6 +1,8 @@
 package com.example.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,8 +23,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.DirectionsBus
 import androidx.compose.material.icons.filled.ElectricBolt
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Speed
@@ -72,7 +74,7 @@ fun DemandPredictionScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -81,32 +83,38 @@ fun DemandPredictionScreen(
                 Column {
                     Text(
                         text = "Transit Demand Predictor",
-                        style = MaterialTheme.typography.headlineSmall,
+                        style = MaterialTheme.typography.displayMedium,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
+                    Spacer(modifier = Modifier.height(2.dp))
                     Text(
-                        text = "Historical regression forecasting & fleet optimization",
+                        text = "Diurnal regression & fleet allocation simulation",
                         style = MaterialTheme.typography.bodySmall,
                         color = Color(0xFF94A3B8)
                     )
                 }
 
                 Surface(
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(12.dp),
                     color = Color(0xFF0E3A4B),
                     border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF00C9E0))
                 ) {
                     Row(
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.Default.AutoAwesome, contentDescription = null, tint = Color(0xFF00C9E0), modifier = Modifier.size(14.dp))
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Icon(
+                            Icons.Default.AutoAwesome,
+                            contentDescription = null,
+                            tint = Color(0xFF00C9E0),
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
                         Text(
-                            text = "${predictionResult?.confidencePercent ?: 88}% Confidence",
+                            text = "${predictionResult?.confidencePercent ?: 90}% Confidence",
                             fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.ExtraBold,
                             color = Color(0xFFA5F3FC)
                         )
                     }
@@ -114,7 +122,7 @@ fun DemandPredictionScreen(
             }
         }
 
-        // Route Selector Chips
+        // Route Selector Chips with Google Stitch Pills
         item {
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -125,11 +133,11 @@ fun DemandPredictionScreen(
                     val rColor = parseColor(r.colorHex)
 
                     Surface(
-                        shape = RoundedCornerShape(12.dp),
-                        color = if (isSel) rColor.copy(alpha = 0.25f) else Color(0xFF1E293B),
+                        shape = RoundedCornerShape(14.dp),
+                        color = if (isSel) rColor.copy(alpha = 0.22f) else Color(0xFF131D2E),
                         border = androidx.compose.foundation.BorderStroke(
                             1.dp,
-                            if (isSel) rColor else Color(0xFF334155)
+                            if (isSel) rColor else Color(0xFF24334A)
                         ),
                         modifier = Modifier
                             .clickable {
@@ -138,15 +146,15 @@ fun DemandPredictionScreen(
                             }
                     ) {
                         Row(
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Box(modifier = Modifier.size(8.dp).background(rColor, CircleShape))
-                            Spacer(modifier = Modifier.width(6.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = r.routeId,
                                 fontSize = 12.sp,
-                                fontWeight = if (isSel) FontWeight.Bold else FontWeight.Medium,
+                                fontWeight = if (isSel) FontWeight.ExtraBold else FontWeight.Medium,
                                 color = if (isSel) Color.White else Color(0xFF94A3B8)
                             )
                         }
@@ -158,7 +166,7 @@ fun DemandPredictionScreen(
         // Interactive "What-If" Scenario Controls Card
         item {
             Card(
-                shape = RoundedCornerShape(20.dp),
+                shape = RoundedCornerShape(22.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
                 border = androidx.compose.foundation.BorderStroke(
                     1.dp,
@@ -166,15 +174,22 @@ fun DemandPredictionScreen(
                 ),
                 modifier = Modifier.fillMaxWidth().testTag("simulation_controls_card")
             ) {
-                Column(modifier = Modifier.padding(18.dp)) {
+                Column(modifier = Modifier.padding(20.dp)) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.Tune, contentDescription = null, tint = Color(0xFF00C9E0))
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Box(
+                                modifier = Modifier
+                                    .size(34.dp)
+                                    .background(Color(0xFF0E3A4B), CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(Icons.Default.Tune, contentDescription = null, tint = Color(0xFF00C9E0), modifier = Modifier.size(18.dp))
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
                             Text(
                                 text = "Scenario Simulation Parameters",
                                 style = MaterialTheme.typography.titleMedium,
@@ -184,20 +199,24 @@ fun DemandPredictionScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(14.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     // Day of Week
                     Text("Day of Week", fontSize = 12.sp, color = Color(0xFFA5F3FC), fontWeight = FontWeight.SemiBold)
-                    Spacer(modifier = Modifier.height(6.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        horizontalArrangement = Arrangement.spacedBy(5.dp)
                     ) {
                         days.forEach { d ->
                             val isSel = d == predictionInput.targetDay
                             Surface(
-                                shape = RoundedCornerShape(8.dp),
-                                color = if (isSel) Color(0xFF00C9E0) else Color(0xFF1E293B),
+                                shape = RoundedCornerShape(10.dp),
+                                color = if (isSel) Color(0xFF00C9E0) else Color(0xFF131D2E),
+                                border = androidx.compose.foundation.BorderStroke(
+                                    1.dp,
+                                    if (isSel) Color(0xFF00C9E0) else Color(0xFF24334A)
+                                ),
                                 modifier = Modifier
                                     .weight(1f)
                                     .clickable { onUpdateInput(predictionInput.copy(targetDay = d)) }
@@ -208,13 +227,13 @@ fun DemandPredictionScreen(
                                     fontWeight = FontWeight.Bold,
                                     color = if (isSel) Color.Black else Color.White,
                                     textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                                    modifier = Modifier.padding(vertical = 6.dp)
+                                    modifier = Modifier.padding(vertical = 8.dp)
                                 )
                             }
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(14.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     // Hour of Day Slider
                     Row(
@@ -224,7 +243,7 @@ fun DemandPredictionScreen(
                     ) {
                         Text("Target Departure Hour", fontSize = 12.sp, color = Color(0xFFA5F3FC), fontWeight = FontWeight.SemiBold)
                         Text(
-                            text = "${String.format("%02d", predictionInput.targetHour)}:00 ${if (predictionInput.targetHour in 7..9 || predictionInput.targetHour in 17..19) "🔥 PEAK RUSH" else ""}",
+                            text = "${String.format(java.util.Locale.US, "%02d", predictionInput.targetHour)}:00 ${if (predictionInput.targetHour in 7..9 || predictionInput.targetHour in 17..19) "🔥 PEAK SURGE" else ""}",
                             fontSize = 12.sp,
                             fontWeight = FontWeight.ExtraBold,
                             color = if (predictionInput.targetHour in 7..9 || predictionInput.targetHour in 17..19) Color(0xFFF59E0B) else Color(0xFF00C9E0)
@@ -239,25 +258,34 @@ fun DemandPredictionScreen(
                         colors = SliderDefaults.colors(
                             thumbColor = Color(0xFF00C9E0),
                             activeTrackColor = Color(0xFF00C9E0),
-                            inactiveTrackColor = Color(0xFF334155)
+                            inactiveTrackColor = Color(0xFF24334A)
                         ),
                         modifier = Modifier.testTag("prediction_hour_slider")
                     )
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     // Weather Condition Chips
                     Text("Weather Condition", fontSize = 12.sp, color = Color(0xFFA5F3FC), fontWeight = FontWeight.SemiBold)
-                    Spacer(modifier = Modifier.height(6.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         weatherTypes.forEach { w ->
                             val isSel = w == predictionInput.targetWeather
+                            val wColor = when (w) {
+                                "Rain", "Heavy Rain" -> Color(0xFF38BDF8)
+                                "Snow" -> Color(0xFFA5F3FC)
+                                else -> Color(0xFF10B981)
+                            }
                             Surface(
-                                shape = RoundedCornerShape(8.dp),
-                                color = if (isSel) Color(0xFF3B82F6) else Color(0xFF1E293B),
+                                shape = RoundedCornerShape(10.dp),
+                                color = if (isSel) wColor.copy(alpha = 0.25f) else Color(0xFF131D2E),
+                                border = androidx.compose.foundation.BorderStroke(
+                                    1.dp,
+                                    if (isSel) wColor else Color(0xFF24334A)
+                                ),
                                 modifier = Modifier
                                     .weight(1f)
                                     .clickable { onUpdateInput(predictionInput.copy(targetWeather = w)) }
@@ -268,21 +296,21 @@ fun DemandPredictionScreen(
                                     fontWeight = FontWeight.Bold,
                                     color = if (isSel) Color.White else Color(0xFF94A3B8),
                                     textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                                    modifier = Modifier.padding(vertical = 6.dp)
+                                    modifier = Modifier.padding(vertical = 8.dp)
                                 )
                             }
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(14.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     // Dispatch Headway & Capacity Sliders
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text("Scheduled Headway: ${predictionInput.plannedHeadwayMinutes} mins", fontSize = 11.sp, color = Color(0xFF94A3B8))
-                        Text("Vehicle Cap: ${predictionInput.plannedVehicleCapacity} pax", fontSize = 11.sp, color = Color(0xFF94A3B8))
+                        Text("Scheduled Headway: ${predictionInput.plannedHeadwayMinutes} mins", fontSize = 11.sp, color = Color(0xFF94A3B8), fontWeight = FontWeight.Medium)
+                        Text("Vehicle Cap: ${predictionInput.plannedVehicleCapacity} pax", fontSize = 11.sp, color = Color(0xFF94A3B8), fontWeight = FontWeight.Medium)
                     }
                     Slider(
                         value = predictionInput.plannedHeadwayMinutes.toFloat(),
@@ -291,28 +319,28 @@ fun DemandPredictionScreen(
                         colors = SliderDefaults.colors(
                             thumbColor = Color(0xFF10B981),
                             activeTrackColor = Color(0xFF10B981),
-                            inactiveTrackColor = Color(0xFF334155)
+                            inactiveTrackColor = Color(0xFF24334A)
                         )
                     )
                 }
             }
         }
 
-        // Real-Time Forecast Outcome
+        // Real-Time Forecast Outcome Card
         item {
             predictionResult?.let { res ->
                 val riskColor = parseColor(res.surgeRiskColorHex)
 
                 Card(
-                    shape = RoundedCornerShape(20.dp),
+                    shape = RoundedCornerShape(22.dp),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
                     border = androidx.compose.foundation.BorderStroke(
                         1.dp,
-                        Brush.verticalGradient(listOf(riskColor.copy(alpha = 0.7f), Color(0xFF1E293B)))
+                        Brush.verticalGradient(listOf(riskColor.copy(alpha = 0.75f), Color(0xFF1E293B)))
                     ),
                     modifier = Modifier.fillMaxWidth().testTag("prediction_result_card")
                 ) {
-                    Column(modifier = Modifier.padding(18.dp)) {
+                    Column(modifier = Modifier.padding(20.dp)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -326,8 +354,8 @@ fun DemandPredictionScreen(
                             )
 
                             Surface(
-                                shape = RoundedCornerShape(8.dp),
-                                color = riskColor.copy(alpha = 0.2f),
+                                shape = RoundedCornerShape(10.dp),
+                                color = riskColor.copy(alpha = 0.20f),
                                 border = androidx.compose.foundation.BorderStroke(1.dp, riskColor)
                             ) {
                                 Text(
@@ -335,29 +363,29 @@ fun DemandPredictionScreen(
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.Black,
                                     color = riskColor,
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
                                 )
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(14.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
                         // Stats Summary 3-Box Row
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             PredictionMetricBox(
                                 label = "Expected Boardings",
                                 value = "${res.predictedBoardings}",
-                                unit = "pax",
+                                unit = "passengers",
                                 color = Color(0xFF00C9E0),
                                 modifier = Modifier.weight(1f)
                             )
                             PredictionMetricBox(
                                 label = "Vehicle Occupancy",
                                 value = "${res.predictedOccupancy}",
-                                unit = "pax",
+                                unit = "pax on board",
                                 color = Color(0xFFF59E0B),
                                 modifier = Modifier.weight(1f)
                             )
@@ -370,31 +398,34 @@ fun DemandPredictionScreen(
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(18.dp))
 
-                        // Fleet Recommendation Bar
+                        // Fleet Sizing Recommendation Bar
                         Surface(
-                            shape = RoundedCornerShape(12.dp),
-                            color = Color(0xFF1E293B),
+                            shape = RoundedCornerShape(14.dp),
+                            color = Color(0xFF131D2E),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF24334A)),
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Row(
-                                modifier = Modifier.padding(12.dp),
+                                modifier = Modifier.padding(14.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Column {
                                     Text("Fleet Sizing Recommendation", fontSize = 11.sp, color = Color(0xFF94A3B8))
+                                    Spacer(modifier = Modifier.height(2.dp))
                                     Text(
                                         text = "${res.recommendedVehicles} Vehicles • Headway ${res.recommendedHeadwayMinutes}m",
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.ExtraBold,
+                                        fontSize = 15.sp,
                                         color = Color.White
                                     )
                                 }
                                 Surface(
-                                    shape = RoundedCornerShape(8.dp),
-                                    color = Color(0xFF10B981).copy(alpha = 0.2f)
+                                    shape = RoundedCornerShape(10.dp),
+                                    color = Color(0xFF10B981).copy(alpha = 0.20f),
+                                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF10B981))
                                 ) {
                                     Text(
                                         text = "OPTIMIZED",
@@ -407,30 +438,36 @@ fun DemandPredictionScreen(
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(18.dp))
 
-                        // Operational Optimization Actions
+                        // Operational Directives
                         Text(
                             text = "Model Optimization Directives",
                             fontWeight = FontWeight.Bold,
                             fontSize = 13.sp,
                             color = Color(0xFFA5F3FC)
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
 
                         res.recommendedActions.forEach { action ->
-                            Row(
+                            Surface(
+                                shape = RoundedCornerShape(10.dp),
+                                color = Color(0xFF090D16),
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 4.dp),
-                                verticalAlignment = Alignment.Top
+                                    .padding(vertical = 3.dp)
                             ) {
-                                Text(
-                                    text = action,
-                                    fontSize = 12.sp,
-                                    color = Color(0xFFCBD5E1),
-                                    lineHeight = 17.sp
-                                )
+                                Row(
+                                    modifier = Modifier.padding(10.dp),
+                                    verticalAlignment = Alignment.Top
+                                ) {
+                                    Text(
+                                        text = action,
+                                        fontSize = 12.sp,
+                                        color = Color(0xFFCBD5E1),
+                                        lineHeight = 17.sp
+                                    )
+                                }
                             }
                         }
                     }
@@ -450,7 +487,7 @@ fun DemandPredictionScreen(
         }
 
         item {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
@@ -464,17 +501,18 @@ private fun PredictionMetricBox(
     modifier: Modifier = Modifier
 ) {
     Surface(
-        shape = RoundedCornerShape(12.dp),
-        color = Color(0xFF1E293B),
+        shape = RoundedCornerShape(14.dp),
+        color = Color(0xFF131D2E),
         modifier = modifier
     ) {
         Column(
-            modifier = Modifier.padding(10.dp),
+            modifier = Modifier.padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = label, fontSize = 10.sp, color = Color(0xFF94A3B8), maxLines = 1)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = value, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = color)
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(text = value, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = color)
+            Spacer(modifier = Modifier.height(2.dp))
             Text(text = unit, fontSize = 9.sp, color = Color(0xFF64748B))
         }
     }

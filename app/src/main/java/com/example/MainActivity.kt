@@ -16,11 +16,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoGraph
 import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.Radio
 import androidx.compose.material.icons.filled.SmartToy
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.outlined.AutoGraph
 import androidx.compose.material.icons.outlined.Dashboard
+import androidx.compose.material.icons.outlined.Radio
 import androidx.compose.material.icons.outlined.SmartToy
 import androidx.compose.material.icons.outlined.Speed
 import androidx.compose.material.icons.outlined.Storage
@@ -55,6 +57,7 @@ import com.example.ui.dialogs.ImportDatasetDialog
 import com.example.ui.screens.DashboardScreen
 import com.example.ui.screens.DataManagementScreen
 import com.example.ui.screens.DemandPredictionScreen
+import com.example.ui.screens.LiveTransitScreen
 import com.example.ui.screens.RouteEfficiencyScreen
 import com.example.ui.screens.TransitChatbotScreen
 import com.example.ui.theme.TransitPulseTheme
@@ -66,6 +69,7 @@ enum class ScreenTab(
     val testTag: String
 ) {
     DASHBOARD("Overview", Icons.Filled.Dashboard, Icons.Outlined.Dashboard, "tab_dashboard"),
+    LIVE_TRACKER("Live Radar", Icons.Filled.Radio, Icons.Outlined.Radio, "tab_live_radar"),
     EFFICIENCY("Efficiency", Icons.Filled.Speed, Icons.Outlined.Speed, "tab_efficiency"),
     PREDICTION("Predictor", Icons.Filled.AutoGraph, Icons.Outlined.AutoGraph, "tab_prediction"),
     AI_COPILOT("AI Copilot", Icons.Filled.SmartToy, Icons.Outlined.SmartToy, "tab_ai_copilot"),
@@ -107,6 +111,14 @@ fun TransitApp(viewModel: TransitViewModel) {
     val predictionResult by viewModel.predictionResult.collectAsStateWithLifecycle()
     val userMessage by viewModel.userMessage.collectAsStateWithLifecycle()
 
+    // Live Transit State
+    val liveVehicles by viewModel.liveVehicles.collectAsStateWithLifecycle()
+    val livePredictions by viewModel.livePredictions.collectAsStateWithLifecycle()
+    val isSyncingLive by viewModel.isSyncingLive.collectAsStateWithLifecycle()
+    val lastSyncTimestamp by viewModel.lastLiveSyncTimestamp.collectAsStateWithLifecycle()
+    val liveSyncError by viewModel.liveSyncError.collectAsStateWithLifecycle()
+    val liveAgencyUrl by viewModel.liveAgencyUrl.collectAsStateWithLifecycle()
+
     // Handle back button to return to overview tab if on secondary screens
     BackHandler(enabled = currentTab != 0) {
         currentTab = 0
@@ -138,14 +150,15 @@ fun TransitApp(viewModel: TransitViewModel) {
                             Icon(
                                 imageVector = if (isSelected) tab.selectedIcon else tab.unselectedIcon,
                                 contentDescription = tab.title,
-                                modifier = Modifier.size(20.dp)
+                                modifier = Modifier.size(19.dp)
                             )
                         },
                         label = {
                             Text(
                                 text = tab.title,
-                                fontSize = 9.sp,
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                                fontSize = 8.5.sp,
+                                fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Medium,
+                                maxLines = 1
                             )
                         },
                         colors = NavigationBarItemDefaults.colors(
@@ -175,18 +188,32 @@ fun TransitApp(viewModel: TransitViewModel) {
                     selectedRouteId = selectedRouteId,
                     predictionResult = predictionResult,
                     onSelectRoute = { viewModel.selectRoute(it) },
-                    onNavigateToSimulator = { currentTab = 2 },
+                    onNavigateToSimulator = { currentTab = 3 },
                     onOpenAddRecord = { showAddRecordDialog = true },
                     onOpenImportDataset = { showImportDialog = true }
                 )
-                1 -> RouteEfficiencyScreen(
+                1 -> LiveTransitScreen(
+                    routes = routes,
+                    selectedRouteId = selectedRouteId,
+                    liveVehicles = liveVehicles,
+                    livePredictions = livePredictions,
+                    isSyncing = isSyncingLive,
+                    lastSyncTimestamp = lastSyncTimestamp,
+                    syncError = liveSyncError,
+                    agencyUrl = liveAgencyUrl,
+                    onSelectRoute = { viewModel.selectRoute(it) },
+                    onSyncNow = { viewModel.syncLiveData(it) },
+                    onIngestToDatabase = { viewModel.ingestLiveTelemetry() },
+                    onSetAgencyUrl = { viewModel.setLiveAgencyUrl(it) }
+                )
+                2 -> RouteEfficiencyScreen(
                     routes = routes,
                     records = records,
                     efficiencyStats = efficiencyStats,
                     selectedRouteId = selectedRouteId,
                     onSelectRoute = { viewModel.selectRoute(it) }
                 )
-                2 -> DemandPredictionScreen(
+                3 -> DemandPredictionScreen(
                     routes = routes,
                     selectedRouteId = selectedRouteId,
                     predictionInput = predictionInput,
@@ -194,8 +221,8 @@ fun TransitApp(viewModel: TransitViewModel) {
                     onSelectRoute = { viewModel.selectRoute(it) },
                     onUpdateInput = { viewModel.updatePredictionInput(it) }
                 )
-                3 -> TransitChatbotScreen()
-                4 -> DataManagementScreen(
+                4 -> TransitChatbotScreen()
+                5 -> DataManagementScreen(
                     routes = routes,
                     records = records,
                     onOpenAddRecord = { showAddRecordDialog = true },
